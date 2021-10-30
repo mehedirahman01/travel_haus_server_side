@@ -2,6 +2,7 @@ const express = require('express')
 const { MongoClient } = require('mongodb');
 const cors = require('cors')
 require('dotenv').config()
+const ObjectId = require('mongodb').ObjectId
 
 // initialization
 const app = express()
@@ -26,8 +27,22 @@ async function run() {
         app.get('/packages', async (req, res) => {
             const cursor = tourPackagesCollection.find({})
             const tourPackages = await cursor.toArray()
-            console.log(tourPackages)
             res.send(tourPackages)
+        })
+
+        // Get Single Package Details
+        app.get('/book/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const singlePackage = await tourPackagesCollection.findOne(query)
+            res.json(singlePackage)
+        })
+
+
+        // Post API
+        app.post('/book', async (req, res) => {
+            const booking = req.body
+            console.log(booking)
         })
     }
 
