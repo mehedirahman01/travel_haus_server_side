@@ -69,11 +69,18 @@ async function run() {
         })
 
 
-        // Post API
+        // Booking Post API
         app.post('/book', async (req, res) => {
             const booking = req.body
             const result = await bookingsCollection.insertOne(booking)
             res.json(booking)
+        })
+
+        //Package post API
+        app.post('/addPackages', async (req, res) => {
+            const package = req.body
+            const result = await tourPackagesCollection.insertOne(package)
+            res.json(result)
         })
 
         // Delete API
