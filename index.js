@@ -47,12 +47,41 @@ async function run() {
             res.send(products)
         })
 
+        // Get All Bookings API 
+        app.get('/allBookings', async (req, res) => {
+            const cursor = bookingsCollection.find({})
+            const bookings = await cursor.toArray()
+            res.send(bookings)
+        })
+
+        //Approve Booking
+        app.put('/booking/:id', async (req, res) => {
+            const bookingId = req.params.id
+            const query = { _id: ObjectId(bookingId) }
+
+            const updateDoc = {
+                $set: {
+                    status: "approved"
+                },
+            };
+            const result = await bookingsCollection.updateOne(query, updateDoc);
+            res.send(result)
+        })
+
 
         // Post API
         app.post('/book', async (req, res) => {
             const booking = req.body
             const result = await bookingsCollection.insertOne(booking)
             res.json(booking)
+        })
+
+        // Delete API
+        app.delete('/booking/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const result = await bookingsCollection.deleteOne(query)
+            res.json(result)
         })
     }
 
