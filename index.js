@@ -22,6 +22,7 @@ async function run() {
         await client.connect()
         const database = client.db('travelHaus')
         const tourPackagesCollection = database.collection('tourPackages')
+        const bookingsCollection = database.collection('bookings')
 
         // Get Tour Packages API 
         app.get('/packages', async (req, res) => {
@@ -38,11 +39,20 @@ async function run() {
             res.json(singlePackage)
         })
 
+        // Get User Bookings
+        app.post('/myBookings', async (req, res) => {
+            const userEmail = req.body.email
+            const query = { email: { $in: [userEmail] } }
+            const products = await bookingsCollection.find(query).toArray()
+            res.send(products)
+        })
+
 
         // Post API
         app.post('/book', async (req, res) => {
             const booking = req.body
-            console.log(booking)
+            const result = await bookingsCollection.insertOne(booking)
+            res.json(booking)
         })
     }
 
